@@ -81,7 +81,8 @@ body {
   position: sticky;
   top: 0;
   z-index: 999;
-  padding: 14px 22px;
+  padding: 6px 22px;
+  /* Reduced vertical padding */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -102,14 +103,17 @@ body {
 }
 
 .nav-logo {
-  height: 48px;
+  height: 65px;
+  /* Significantly increased height */
   width: auto;
+  min-width: 180px;
+  /* Ensure horizontal prominence */
   object-fit: contain;
   transition: transform 0.2s ease;
 }
 
 .nav-logo:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .logo::before {
