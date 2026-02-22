@@ -81,8 +81,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 999;
-  padding: 4px 22px;
-  /* Very tight vertical padding */
+  padding: 8px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -105,16 +104,16 @@ body {
 }
 
 .nav-logo {
-  height: 55px;
-  /* Clean height for a readable logo */
+  height: 90px;
+  /* Highly prominent size */
   width: auto;
   object-fit: contain;
-  transition: transform 0.2s ease;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.06));
 }
 
 .nav-logo:hover {
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 .logo::before {
