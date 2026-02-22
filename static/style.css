@@ -96,29 +96,24 @@ body {
 }
 
 .logo {
-  font-weight: 900;
-  letter-spacing: 0.6px;
-  font-size: 16px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  text-decoration: none;
 }
 
 .nav-logo {
-  height: 32px;
-  width: 32px;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.2s ease;
 }
 
-:root[data-theme="dark"] .nav-logo {
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+.nav-logo:hover {
+  transform: scale(1.05);
 }
 
 .logo::before {
   display: none !important;
-  /* Hide the previous dot logo */
 }
 
 .nav-links {
