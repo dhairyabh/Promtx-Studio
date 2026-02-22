@@ -147,6 +147,19 @@ body {
   color: rgba(255, 255, 255, 0.92);
 }
 
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-logo-right {
+  height: 36px;
+  width: auto;
+  border-radius: 6px;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+}
+
 /* Theme toggle button */
 .theme-toggle {
   border: 1px solid var(--border);
