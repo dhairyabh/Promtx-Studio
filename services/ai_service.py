@@ -3,6 +3,9 @@ import os
 import json
 import time
 from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv()
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
