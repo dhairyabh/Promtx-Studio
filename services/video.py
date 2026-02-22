@@ -125,9 +125,7 @@ def add_captions(input_path, output_path, target_language=None):
     srt_content = generate_srt_gemini(input_path, target_language)
     
     if srt_content.startswith("Error"):
-        print(f"Caption Error: {srt_content}")
-        shutil.copy(input_path, output_path)
-        return output_path
+        raise Exception(f"Caption Generation Failed: {srt_content}")
 
     # Use a fixed, space-free filename for the temporary SRT
     temp_srt_filename = f"temp_captions_{uuid.uuid4().hex[:8]}.srt"
