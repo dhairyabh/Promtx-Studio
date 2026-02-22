@@ -1,0 +1,111 @@
+/* ==========================================
+   SOCIAL SHARE BUTTONS STYLING
+   ========================================== */
+
+.share-container {
+    margin-top: 20px;
+    padding: 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    box-shadow: var(--shadow2);
+}
+
+.share-title {
+    font-size: 15px;
+    font-weight: 900;
+    margin-bottom: 14px;
+    text-align: center;
+    color: var(--text);
+}
+
+.share-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.share-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: 0.2s ease;
+    background: var(--soft);
+    border: 1px solid var(--border);
+    min-width: 80px;
+}
+
+.share-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow2);
+}
+
+.share-btn svg {
+    width: 28px;
+    height: 28px;
+}
+
+.share-btn span {
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Platform-specific colors */
+.share-btn.instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: white;
+    border: none;
+}
+
+.share-btn.whatsapp {
+    background: #25D366;
+    color: white;
+    border: none;
+}
+
+.share-btn.facebook {
+    background: #1877F2;
+    color: white;
+    border: none;
+}
+
+.share-btn.twitter {
+    background: #1DA1F2;
+    color: white;
+    border: none;
+}
+
+/* Dark mode adjustments */
+:root[data-theme="dark"] .share-container {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.05));
+}
+
+/* Responsive */
+@media (max-width: 560px) {
+    .share-buttons {
+        gap: 8px;
+    }
+
+    .share-btn {
+        min-width: 70px;
+        padding: 10px 12px;
+    }
+
+    .share-btn svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .share-btn span {
+        font-size: 10px;
+    }
+}

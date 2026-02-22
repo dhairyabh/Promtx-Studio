@@ -1,0 +1,207 @@
+document.addEventListener("DOMContentLoaded", () => {
+  // ========== DOM ELEMENTS ==========
+  const processBtn = document.getElementById("processBtn");
+  const fileInput = document.getElementById("video");
+  const promptInput = document.getElementById("prompt");
+  const voiceBtn = document.getElementById("voiceBtn");
+  const resultVideo = document.getElementById("resultVideo");
+  const root = document.documentElement;
+  const themeBtn = document.getElementById("themeToggle");
+  const themeIcon = document.getElementById("themeIcon");
+
+  // ========== THEME TOGGLE ==========
+  if (themeBtn && themeIcon) {
+    function applyTheme(theme) {
+      root.setAttribute("data-theme", theme);
+      localStorage.setItem("theme", theme);
+      themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
+      themeBtn.title = theme === "dark" ? "Switch to Light" : "Switch to Dark";
+    }
+
+    const saved = localStorage.getItem("theme") || "light";
+    applyTheme(saved);
+
+    themeBtn.addEventListener("click", () => {
+      const current = root.getAttribute("data-theme") || "light";
+      applyTheme(current === "light" ? "dark" : "light");
+    });
+  }
+
+  // ========== VOICE RECOGNITION ==========
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition && voiceBtn) {
+    const recognition = new SpeechRecognition();
+
+    // Enhanced accuracy settings
+    recognition.continuous = true;  // Keep listening for better accuracy
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;  // Show real-time transcription
+    recognition.maxAlternatives = 3;  // Get multiple alternatives for better accuracy
+
+    let finalTranscript = '';
+    let isRecording = false;
+
+    voiceBtn.addEventListener("click", () => {
+      if (isRecording) {
+        recognition.stop();
+        isRecording = false;
+      } else {
+        finalTranscript = '';
+        recognition.start();
+        isRecording = true;
+      }
+    });
+
+    recognition.onstart = () => {
+      voiceBtn.classList.add("recording");
+      voiceBtn.innerText = "🔴";
+      promptInput.placeholder = "Listening... Speak now";
+    };
+
+    recognition.onend = () => {
+      voiceBtn.classList.remove("recording");
+      voiceBtn.innerText = "🎤";
+      promptInput.placeholder = "Enter your prompt or use voice";
+      isRecording = false;
+    };
+
+    recognition.onresult = (event) => {
+      let interimTranscript = '';
+
+      // Process all results for better accuracy
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript + ' ';
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+
+      // Update input with final + interim results
+      promptInput.value = (finalTranscript + interimTranscript).trim();
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      voiceBtn.classList.remove("recording");
+      voiceBtn.innerText = "🎤";
+      isRecording = false;
+
+      if (event.error === 'no-speech') {
+        promptInput.placeholder = "No speech detected. Try again.";
+      } else if (event.error === 'audio-capture') {
+        promptInput.placeholder = "Microphone not found. Check permissions.";
+      } else {
+        promptInput.placeholder = "Error: " + event.error;
+      }
+    };
+  } else if (voiceBtn) {
+    voiceBtn.style.display = "none";
+  }
+
+  // ========== VIDEO PROCESSING ==========
+  if (processBtn) {
+    processBtn.addEventListener("click", async () => {
+      const file = fileInput.files[0];
+      const prompt = promptInput.value.trim();
+
+      if (!file && !prompt) {
+        resultVideo.innerHTML = `<p style="color: #ef4444;">❌ Please upload a video or enter a generation prompt.</p>`;
+        return;
+      }
+
+      // If no file but there's a prompt, assume generation
+      if (!file && prompt) {
+        resultVideo.innerHTML = `<p style="color: #38bdf8;">🎬 Generating video from prompt...</p>`;
+        processBtn.disabled = true;
+        processBtn.innerText = "Generating...";
+
+        const formData = new FormData();
+        formData.append("prompt", prompt);
+
+        try {
+          const response = await fetch("/process-video/", {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (data.error) {
+            resultVideo.innerHTML = `<p style="color: #ef4444;">❌ ${data.error}</p>`;
+          } else {
+            resultVideo.innerHTML = `
+              <p style="color: #22c55e;">✅ Video generated successfully!</p>
+              <video controls>
+                <source src="${data.video_url}" type="video/mp4">
+              </video>
+              ${createShareButtons(data.video_url)}
+            `;
+          }
+        } catch (error) {
+          resultVideo.innerHTML = `<p style="color: #ef4444;">❌ Error: ${error.message}</p>`;
+        } finally {
+          processBtn.disabled = false;
+          processBtn.innerText = "Process Video";
+        }
+        return;
+      }
+
+      // Otherwise, editing mode
+      if (!prompt) {
+        resultVideo.innerHTML = `<p style="color: #ef4444;">❌ Please enter a prompt.</p>`;
+        return;
+      }
+
+      resultVideo.innerHTML = `<p style="color: #38bdf8;">⏳ Processing your video...</p>`;
+      processBtn.disabled = true;
+      processBtn.innerText = "Processing...";
+
+      const formData = new FormData();
+      formData.append("video", file);
+      formData.append("prompt", prompt);
+
+      try {
+        const response = await fetch("/process-video/", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          resultVideo.innerHTML = `<p style="color: #ef4444;">❌ ${data.error}</p>`;
+        } else if (data.summary) {
+          resultVideo.innerHTML = `
+            <div class="summary-box">
+              <h3>📝 Summary</h3>
+              <div class="summary-content">${data.summary}</div>
+            </div>
+          `;
+        } else if (data.video_url && data.video_url.endsWith(".mp3")) {
+          resultVideo.innerHTML = `
+            <p style="color: #22c55e;">✅ Audio extracted successfully!</p>
+            <audio controls>
+              <source src="${data.video_url}" type="audio/mpeg">
+            </audio>
+          `;
+        } else {
+          resultVideo.innerHTML = `
+            <p style="color: #22c55e;">✅ Video processed successfully!</p>
+            <video controls>
+              <source src="${data.video_url}" type="video/mp4">
+            </video>
+            ${createShareButtons(data.video_url)}
+          `;
+        }
+      } catch (error) {
+        resultVideo.innerHTML = `<p style="color: #ef4444;">❌ Error: ${error.message}</p>`;
+      } finally {
+        processBtn.disabled = false;
+        processBtn.innerText = "Process Video";
+      }
+    });
+  }
+});

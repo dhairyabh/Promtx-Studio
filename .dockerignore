@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+venv/
+.env
+uploads/
+outputs/
+.git
+.gitignore
+Dockerfile
+.dockerignore
+temp_*.srt
+quota_usage.json

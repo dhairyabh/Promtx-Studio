@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-multipart
+openai-whisper
+google-genai
+numpy
+ffmpeg-python
+rembg
+onnxruntime
+
+
