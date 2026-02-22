@@ -6,6 +6,9 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     libgl1-mesa-glx \
     libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory in the container
