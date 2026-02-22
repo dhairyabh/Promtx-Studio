@@ -101,20 +101,24 @@ body {
   font-size: 16px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+}
+
+.nav-logo {
+  height: 32px;
+  width: 32px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="dark"] .nav-logo {
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }
 
 .logo::before {
-  content: "";
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: var(--accent);
-  box-shadow: 0 0 0 5px rgba(124, 58, 237, 0.0);
-}
-
-:root[data-theme="dark"] .logo::before {
-  box-shadow: 0 0 0 5px rgba(124, 58, 237, 0.15);
+  display: none;
+  /* Hide the previous dot logo */
 }
 
 .nav-links {
