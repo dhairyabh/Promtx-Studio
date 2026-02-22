@@ -102,22 +102,29 @@ body {
   align-items: center;
   text-decoration: none;
   overflow: visible;
+  height: 50px;
+  /* Force a fixed height for the container to match navbar links */
 }
 
 .nav-logo {
-  height: 120px;
-  /* Extreme height to make internal text readable */
+  height: 180px;
+  /* Extreme increase for internal text visibility */
   width: auto;
-  min-width: 280px;
-  /* Force horizontal presence */
+  min-width: 320px;
+  /* Hero-sized horizontal presence */
   object-fit: contain;
-  margin: -25px 0;
-  /* Vertical negative margin to keep navbar slim while logo stays large */
+  margin-top: -5px;
+  /* Fine-tune vertical centering */
+  margin-left: -20px;
+  /* Bring it closer to the edge */
+  transform: translateY(-5px);
+  /* Micro-adjustment for visual center */
   transition: transform 0.2s ease;
+  filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.1));
 }
 
 .nav-logo:hover {
-  transform: scale(1.02);
+  transform: translateY(-5px) scale(1.02);
 }
 
 .logo::before {
