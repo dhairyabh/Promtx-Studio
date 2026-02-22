@@ -117,7 +117,7 @@ body {
 }
 
 .logo::before {
-  display: none;
+  display: none !important;
   /* Hide the previous dot logo */
 }
 
