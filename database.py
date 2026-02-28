@@ -1,4 +1,5 @@
 import os
+import urllib.parse
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
@@ -11,6 +12,24 @@ def get_db():
         print("Warning: MONGODB_URI not found in .env file.")
         return None
         
+    # Fix for unescaped passwords (like Dhairya@321)
+    if "@" in uri and uri.count("@") > 1:
+        # Extract the credentials part: mongodb+srv://dhairyabh:Dhairya@321@cluster0...
+        try:
+            protocol_end = uri.find("://") + 3
+            cluster_start = uri.rfind("@")
+            
+            credentials = uri[protocol_end:cluster_start]
+            if ":" in credentials:
+                username, password = credentials.split(":", 1)
+                
+                safe_username = urllib.parse.quote_plus(username)
+                safe_password = urllib.parse.quote_plus(password)
+                
+                uri = uri[:protocol_end] + f"{safe_username}:{safe_password}" + uri[cluster_start:]
+        except Exception as parse_error:
+            print(f"Warning: Could not auto-escape URI: {parse_error}")
+
     try:
         client = MongoClient(uri)
         # Verify connection
