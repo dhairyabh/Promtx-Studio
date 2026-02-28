@@ -258,4 +258,94 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // ========== CHATBOT WIDGET ==========
+  const chatToggle = document.getElementById('chatToggle');
+  const chatClose = document.getElementById('chatClose');
+  const chatWindow = document.getElementById('chatWindow');
+  const chatInput = document.getElementById('chatInput');
+  const chatSend = document.getElementById('chatSend');
+  const chatMessages = document.getElementById('chatMessages');
+
+  if (chatToggle && chatWindow) {
+    // Toggle window
+    chatToggle.addEventListener('click', () => {
+      chatWindow.classList.toggle('hidden');
+      if (!chatWindow.classList.contains('hidden')) {
+        chatInput.focus(); // Auto-focus input when opened
+      }
+    });
+
+    chatClose.addEventListener('click', () => {
+      chatWindow.classList.add('hidden');
+    });
+
+    // Helper: append message bubble
+    function appendMessage(text, sender) {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message', sender);
+
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+
+      // Basic formatting for bot lines (newlines to <br>)
+      if (sender === 'bot') {
+        bubble.innerHTML = text.replace(/\n/g, '<br>');
+      } else {
+        bubble.textContent = text;
+      }
+
+      msgDiv.appendChild(bubble);
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
+      return msgDiv;
+    }
+
+    // Send Message
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      // 1. Show user message
+      appendMessage(text, 'user');
+      chatInput.value = '';
+
+      // 2. Add 'typing...' indicator
+      const typingMsg = appendMessage('Typing...', 'bot');
+      chatSend.disabled = true;
+      chatInput.disabled = true;
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+
+        const data = await response.json();
+
+        // Remove typing indicator
+        chatMessages.removeChild(typingMsg);
+
+        if (data.reply) {
+          appendMessage(data.reply, 'bot');
+        } else {
+          appendMessage('Sorry, I encountered an error answering that.', 'bot');
+        }
+      } catch (err) {
+        chatMessages.removeChild(typingMsg);
+        appendMessage('Error: Connection failed.', 'bot');
+      } finally {
+        chatSend.disabled = false;
+        chatInput.disabled = false;
+        chatInput.focus();
+      }
+    }
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  }
 });
+

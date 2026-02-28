@@ -430,3 +430,32 @@ def extract_intent_gemini(user_prompt: str):
     except Exception as e:
         print(f"DEBUG: Intent extraction failed: {e}")
         return None
+
+def handle_chat_query(user_message: str) -> str:
+    """
+    Handles user chat queries regarding the PROMPTX STUDIO platform.
+    """
+    api_key = get_api_key()
+    if not api_key or api_key == "YOUR_GEMINI_API_KEY":
+        return "I'm sorry, my AI backend is not configured correctly (Missing API Key)."
+
+    try:
+        client = genai.Client(api_key=api_key)
+        
+        system_prompt = """
+        You are the friendly and helpful Customer Support AI for PROMPTX STUDIO.
+        PROMPTX STUDIO is an AI-powered Video Editing Engine that lets users edit videos using simple text prompts.
+        Features include: AI Silence Removal, AI Captions, AI Trim, AI Vertical/Horizontal Resizing, Video generation from text (Veo), and AI audio extraction.
+        Keep your answers concise, friendly, and helpful. Do not use complex markdown formatting unless necessary.
+        If a user asks how to do something, tell them they can just upload their video and type what they want in the prompt box!
+        """
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=f"{system_prompt}\n\nUser: {user_message}",
+        )
+        
+        return response.text.strip()
+    except Exception as e:
+        print(f"DEBUG: Chat handle failed: {e}")
+        return f"I'm sorry, I'm having trouble connecting to my brain right now. Please try again later. ({str(e)})"

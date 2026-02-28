@@ -103,3 +103,20 @@ async def submit_feedback(feedback: Feedback):
     except Exception as e:
         print(f"Error saving feedback: {e}")
         return {"error": "Failed to save feedback."}
+
+
+from services.ai_service import handle_chat_query
+
+class ChatRequest(BaseModel):
+    message: str
+
+@app.post("/api/chat")
+async def chat_endpoint(request: ChatRequest):
+    try:
+        from starlette.concurrency import run_in_threadpool
+        # Run chatbot logic in a threadpool so it doesn't block the async event loop
+        reply = await run_in_threadpool(handle_chat_query, request.message)
+        return {"reply": reply}
+    except Exception as e:
+        print(f"Chatbot Error: {e}")
+        return {"error": "Failed to process chat request."}
