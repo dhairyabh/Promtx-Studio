@@ -120,8 +120,19 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // Secret Admin Override
+      if (prompt === "dhairya_admin_unlimited") {
+        localStorage.setItem("promptx_admin", "true");
+        promptInput.value = "";
+        updateQuotaUI();
+        resultVideo.innerHTML = `<p style="color: #22c55e;">✅ Admin Mode Enabled! You now have unlimited prompts.</p>`;
+        return;
+      }
+
       // Decrement usage count right when the process button is clicked and prompt is valid
-      incrementUsageCount();
+      if (localStorage.getItem("promptx_admin") !== "true") {
+        incrementUsageCount();
+      }
 
       // If no file but there's a prompt, assume generation
       if (!file && prompt) {
@@ -281,6 +292,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateQuotaUI() {
     if (!quotaCountSpan) return;
+
+    // Check if admin mode is on
+    if (localStorage.getItem("promptx_admin") === "true") {
+      quotaCountSpan.parentElement.innerHTML = `<span style="color: #22c55e; font-weight: 800;">Admin Mode (Unlimited Prompts)</span>`;
+      return;
+    }
+
     const current = getUsageCount();
     const remaining = Math.max(0, MAX_FREE_PROMPTS - current);
 
@@ -292,6 +310,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function checkQuota() {
+    if (localStorage.getItem("promptx_admin") === "true") return true;
+
     if (getUsageCount() >= MAX_FREE_PROMPTS) {
       if (resultVideo) {
         resultVideo.innerHTML = `
