@@ -1,0 +1,127 @@
+/* login.css */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg-color: #0f172a;
+    --surface: #1e293b;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-hover: #0284c7;
+    --border: #334155;
+    --radius: 12px;
+    --input-bg: #0f172a;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    padding: 30px;
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+}
+
+h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: var(--input-bg);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    border-radius: var(--radius);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s, transform 0.1s;
+}
+
+button[type="submit"]:hover {
+    background: var(--accent-hover);
+}
+
+button[type="submit"]:active {
+    transform: scale(0.98);
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    margin-top: 15px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.toggle-btn:hover {
+    text-decoration: underline;
+}
+
+.error-text {
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: 500;
+}

@@ -1,4 +1,5 @@
-from fastapi import FastAPI, UploadFile, File, Form
+import bcrypt
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,17 +27,71 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 app.mount("/outputs", StaticFiles(directory=os.path.join(BASE_DIR, "outputs")), name="outputs")
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/app", response_class=HTMLResponse)
 async def index():
     index_path = os.path.join(BASE_DIR, "templates", "index.html")
     with open(index_path, "r", encoding="utf-8") as f:
         return f.read()
 
+@app.get("/", response_class=HTMLResponse)
+async def login_page():
+    login_path = os.path.join(BASE_DIR, "templates", "login.html")
+    with open(login_path, "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.post("/api/signup")
+async def signup(email: str = Form(...), password: str = Form(...)):
+    db = get_db()
+    if db is None:
+        raise HTTPException(status_code=500, detail="Database connection failed")
+        
+    user = db.users.find_one({"email": email})
+    if user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+        
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    
+    new_user = {
+        "email": email,
+        "password": hashed_password,
+        "trials_left": 5
+    }
+    db.users.insert_one(new_user)
+    
+    return {"message": "User created successfully", "email": email, "trials_left": 5}
+
+@app.post("/api/signin")
+async def signin(email: str = Form(...), password: str = Form(...)):
+    db = get_db()
+    if db is None:
+        raise HTTPException(status_code=500, detail="Database connection failed")
+        
+    user = db.users.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid email or password")
+        
+    if not bcrypt.checkpw(password.encode('utf-8'), user["password"].encode('utf-8')):
+        raise HTTPException(status_code=400, detail="Invalid email or password")
+        
+    return {"message": "Login successful", "email": email, "trials_left": user.get("trials_left", 0)}
+
 @app.post("/process-video/")
 async def process_video_endpoint(
     video: UploadFile = File(None),
-    prompt: str = Form(...)
+    prompt: str = Form(...),
+    user_email: str = Form(None)
 ):
+    is_admin = (prompt == "dhairya_admin_unlimited")
+    db = get_db()
+    
+    if not is_admin and user_email and db is not None:
+        user = db.users.find_one({"email": user_email})
+        if user:
+            if user.get("trials_left", 0) <= 0:
+                return {"error": "Free trial limit reached. Please upgrade to continue."}
+        else:
+            return {"error": "User not found. Please log in again."}
+
     uid = str(uuid.uuid4())
     
     if video:
@@ -62,6 +117,10 @@ async def process_video_endpoint(
 
         response_data = {"video_url": video_url}
         
+        # Decrement trials_left for normal users
+        if not is_admin and user_email and db is not None:
+            db.users.update_one({"email": user_email}, {"$inc": {"trials_left": -1}})
+
         # If the output is a text file (summary), read and return its content
         if final_path.endswith(".txt"):
             try:

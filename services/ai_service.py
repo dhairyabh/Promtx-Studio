@@ -28,7 +28,7 @@ def generate_summary(transcript: str):
         """
 
         response = client.models.generate_content(
-            model="gemini-3-flash-preview",
+            model="gemini-2.5-flash",
             contents=prompt
         )
         return response.text.strip()
@@ -78,9 +78,9 @@ def generate_srt_gemini(media_path: str, target_language: str = None):
             - COMPLETELY IGNORE the original language if a target language is specified; PRODUCING ONLY {target_language if target_language else 'ORIGINAL LANGUAGE'} SUBTITLES.
             """
 
-            print(f"Generating SRT using Gemini 3 Flash Preview (Target: {target_language if target_language else 'Original'}). Attempt {attempt + 1}/{max_retries}...")
+            print(f"Generating SRT using Gemini 2.5 Flash (Target: {target_language if target_language else 'Original'}). Attempt {attempt + 1}/{max_retries}...")
             response = client.models.generate_content(
-                model="gemini-3-flash-preview",
+                model="gemini-2.5-flash",
                 contents=[uploaded_file, prompt]
             )
             
@@ -218,9 +218,9 @@ def generate_summary_gemini(media_path: str, user_prompt: str = ""):
             3. Provide only the descriptive paragraph. Do not use headings, titles, or bullet points.
             """
 
-            print(f"Analyzing video content with Gemini 3 Flash Preview. Attempt {attempt + 1}/{max_retries}...")
+            print(f"Analyzing video content with Gemini 2.5 Flash. Attempt {attempt + 1}/{max_retries}...")
             response = client.models.generate_content(
-                model="gemini-3-flash-preview",
+                model="gemini-2.5-flash",
                 contents=[uploaded_file, prompt]
             )
             
@@ -418,7 +418,7 @@ def extract_intent_gemini(user_prompt: str):
         """
 
         response = client.models.generate_content(
-            model="gemini-3-flash-preview",
+            model="gemini-2.5-flash",
             contents=f"{system_prompt}\n\nUser Instruction: {user_prompt}",
             config={
                 'response_mime_type': 'application/json'

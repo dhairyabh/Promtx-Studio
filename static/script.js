@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // ========== AUTHENTICATION CHECK ==========
+  const userEmail = localStorage.getItem("promptx_user_email");
+  if (!userEmail) {
+    window.location.href = "/";
+    return;
+  }
+
   // ========== DOM ELEMENTS ==========
   const processBtn = document.getElementById("processBtn");
   const fileInput = document.getElementById("video");
@@ -8,6 +15,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const root = document.documentElement;
   const themeBtn = document.getElementById("themeToggle");
   const themeIcon = document.getElementById("themeIcon");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.removeItem("promptx_user_email");
+      localStorage.removeItem("promptX_usage_count");
+      window.location.href = "/";
+    });
+  }
 
   // ========== THEME TOGGLE ==========
   if (themeBtn && themeIcon) {
@@ -151,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const formData = new FormData();
         formData.append("prompt", prompt);
+        formData.append("user_email", userEmail);
 
         try {
           const response = await fetch("/process-video/", {
@@ -188,6 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData();
       formData.append("video", file);
       formData.append("prompt", prompt);
+      formData.append("user_email", userEmail);
 
       try {
         const response = await fetch("/process-video/", {

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROMPTX STUDIO - Login</title>
+    <link rel="stylesheet" href="/static/login.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="logo">PROMPTX STUDIO</div>
+        <h2 id="formTitle">Sign In</h2>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" required placeholder="Enter your email">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" required placeholder="Enter your password">
+            </div>
+            <button type="submit">Sign In</button>
+            <div id="loginError" class="error-text"></div>
+        </form>
+
+        <form id="signupForm" style="display: none;">
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="signupEmail" required placeholder="Create an email">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="signupPassword" required placeholder="Create a password">
+            </div>
+            <button type="submit">Sign Up</button>
+            <div id="signupError" class="error-text"></div>
+        </form>
+
+        <button id="toggleBtn" class="toggle-btn">Need an account? Sign Up</button>
+    </div>
+
+    <script src="/static/login.js"></script>
+</body>
+
+</html>
