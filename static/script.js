@@ -115,6 +115,12 @@ document.addEventListener("DOMContentLoaded", () => {
         updateQuotaUI();
         resultVideo.innerHTML = `<p style="color: #22c55e;">✅ Admin Mode Enabled! You now have unlimited prompts.</p>`;
         return;
+      } else if (prompt === "dhairya_user_mode") {
+        localStorage.removeItem("promptx_admin");
+        promptInput.value = "";
+        updateQuotaUI();
+        resultVideo.innerHTML = `<p style="color: #38bdf8;">🔄 Admin Mode Disabled. Returned to standard user bounds.</p>`;
+        return;
       }
 
       if (!checkQuota()) return; // Block if quota exceeded
