@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const recognition = new SpeechRecognition();
 
     // Enhanced accuracy settings
-    recognition.continuous = true;  // Keep listening for better accuracy
+    recognition.continuous = false;  // Automatically stop when user stops speaking
     recognition.lang = 'en-US';
     recognition.interimResults = true;  // Show real-time transcription
     recognition.maxAlternatives = 3;  // Get multiple alternatives for better accuracy
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // If no file but there's a prompt, assume generation
       if (!file && prompt) {
-        resultVideo.innerHTML = `<p style="color: #38bdf8;">🎬 Generating video from prompt...</p>`;
+        resultVideo.innerHTML = `<p style="color: #38bdf8;">🎬 Generating video from prompt... (Wait max 4 to 5 min)</p>`;
         processBtn.disabled = true;
         processBtn.innerText = "Generating...";
 
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      resultVideo.innerHTML = `<p style="color: #38bdf8;">⏳ Processing your video...</p>`;
+      resultVideo.innerHTML = `<p style="color: #38bdf8;">⏳ Processing your video... (Wait max 4 to 5 min)</p>`;
       processBtn.disabled = true;
       processBtn.innerText = "Processing...";
 

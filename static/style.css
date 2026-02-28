@@ -610,10 +610,141 @@ input:focus {
   color: #5eead4;
 }
 
-/* ---------- CONTACT ---------- */
-#contact p {
-  margin-top: 10px;
+/* ---------- FOOTER / CONTACT ---------- */
+.footer-section {
+  padding: 40px 0 20px;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+}
+
+:root[data-theme="dark"] .footer-section {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+}
+
+.footer-container {
+  width: 95vw;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 40px;
+  padding-bottom: 30px;
+}
+
+.footer-col {
+  flex: 1 1 0;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-heading {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text);
+}
+
+.phone-box {
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.phone-box span {
+  display: block;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.phone-box span:last-child {
+  margin-bottom: 0;
+}
+
+.footer-email {
+  display: block;
+  color: var(--text);
+  text-decoration: none;
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.footer-email:hover {
+  text-decoration: underline;
+}
+
+.social-icons {
+  display: flex;
+  gap: 12px;
+}
+
+.social-icons a {
+  color: var(--text);
+  background: var(--soft);
+  border: 1px solid var(--border);
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.social-icons a:hover {
+  background: var(--border);
+  transform: translateY(-2px);
+}
+
+.footer-list {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-list li {
+  margin-bottom: 14px;
+}
+
+.footer-list a,
+.footer-list li {
   color: var(--muted);
+  text-decoration: none;
+  transition: 0.3s;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.footer-list a:hover {
+  color: var(--text);
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0 auto;
+  width: 95vw;
+}
+
+.footer-bottom .highlight {
+  color: var(--accent);
+  font-weight: 800;
 }
 
 /* ---------- RESPONSIVE ---------- */
