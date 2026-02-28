@@ -5,17 +5,17 @@ import time
 from datetime import datetime
 from dotenv import load_dotenv
 
-load_dotenv()
-
-# Get from environment variable (Render/Local .env) or use fallback
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+def get_api_key():
+    load_dotenv(override=True)
+    return os.environ.get("GEMINI_API_KEY")
 
 def generate_summary(transcript: str):
-    if not GEMINI_API_KEY :
+    api_key = get_api_key()
+    if not api_key:
         return "Error: Gemini API Key is missing. Please set it in services/ai_service.py."
 
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        client = genai.Client(api_key=api_key)
         
         prompt = f"""
         Provide a detailed, descriptive paragraph summary of the following video transcript. 
@@ -52,7 +52,8 @@ def generate_srt_gemini(media_path: str, target_language: str = None):
     """
     Uploads a media file to Gemini and requests it to generate captions in SRT format.
     """
-    if not GEMINI_API_KEY or GEMINI_API_KEY == "YOUR_GEMINI_API_KEY":
+    api_key = get_api_key()
+    if not api_key or api_key == "YOUR_GEMINI_API_KEY":
         return "Error: Gemini API Key is missing."
 
     import time
@@ -61,7 +62,7 @@ def generate_srt_gemini(media_path: str, target_language: str = None):
 
     for attempt in range(max_retries):
         try:
-            client = genai.Client(api_key=GEMINI_API_KEY)
+            client = genai.Client(api_key=api_key)
             uploaded_file = _upload_and_wait(client, media_path)
 
             lang_instruction = f"TRANSLATE EVERYTHING to {target_language}. Even if the original language is different, the output SRT MUST be in {target_language}." if target_language else "transcribe to the original language"
@@ -193,7 +194,8 @@ def generate_summary_gemini(media_path: str, user_prompt: str = ""):
     Uploads a media file to Gemini and requests a deep content analysis summary,
     matching the language of the user's prompt.
     """
-    if not GEMINI_API_KEY or GEMINI_API_KEY == "YOUR_GEMINI_API_KEY":
+    api_key = get_api_key()
+    if not api_key or api_key == "YOUR_GEMINI_API_KEY":
         return "Error: Gemini API Key is missing."
 
     import time
@@ -202,7 +204,7 @@ def generate_summary_gemini(media_path: str, user_prompt: str = ""):
 
     for attempt in range(max_retries):
         try:
-            client = genai.Client(api_key=GEMINI_API_KEY)
+            client = genai.Client(api_key=api_key)
             uploaded_file = _upload_and_wait(client, media_path)
 
             prompt = f"""
@@ -264,7 +266,8 @@ def generate_video_veo(prompt: str, output_path: str, model: str = 'veo-3.1-gene
     Supports extended durations by looping generation.
     Includes Quota Management and Model Fallback (Fast).
     """
-    if not GEMINI_API_KEY or GEMINI_API_KEY == "YOUR_GEMINI_API_KEY":
+    api_key = get_api_key()
+    if not api_key or api_key == "YOUR_GEMINI_API_KEY":
         return "Error: Gemini API Key is missing."
 
     # 1. Quota Check
@@ -276,7 +279,7 @@ def generate_video_veo(prompt: str, output_path: str, model: str = 'veo-3.1-gene
         raise Exception(f"Local Quota Exceeded: You have used {usage['seconds_used']}s of your {MAX_DAILY_QUOTA_SEC}s daily safety limit. Please wait until tomorrow or increase MAX_DAILY_QUOTA_SEC in ai_service.py.")
 
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        client = genai.Client(api_key=api_key)
         
         current_duration = 0
         video = None
@@ -359,11 +362,12 @@ def extract_intent_gemini(user_prompt: str):
     Uses Gemini to extract structured intent from a natural language prompt.
     Returns a JSON-like dictionary with the detected operation and parameters.
     """
-    if not GEMINI_API_KEY or GEMINI_API_KEY == "YOUR_GEMINI_API_KEY":
+    api_key = get_api_key()
+    if not api_key or api_key == "YOUR_GEMINI_API_KEY":
         return None
 
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        client = genai.Client(api_key=api_key)
         
         system_prompt = """
         You are an AI Video Editor intent extractor. Your job is to convert natural language instructions into structure JSON.
