@@ -104,10 +104,22 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========== VIDEO PROCESSING ==========
   if (processBtn) {
     processBtn.addEventListener("click", async () => {
+      const fileInput = document.getElementById("video");
+      const promptInput = document.getElementById("prompt");
+      const prompt = promptInput ? promptInput.value.trim() : "";
+
+      // Secret Admin Override checked FIRST before blocking logic
+      if (prompt === "dhairya_admin_unlimited") {
+        localStorage.setItem("promptx_admin", "true");
+        promptInput.value = "";
+        updateQuotaUI();
+        resultVideo.innerHTML = `<p style="color: #22c55e;">✅ Admin Mode Enabled! You now have unlimited prompts.</p>`;
+        return;
+      }
+
       if (!checkQuota()) return; // Block if quota exceeded
 
-      const file = fileInput.files[0];
-      const prompt = promptInput.value.trim();
+      const file = fileInput ? fileInput.files[0] : null;
 
       if (!file && !prompt) {
         resultVideo.innerHTML = `<p style="color: #ef4444;">❌ Please upload a video or enter a generation prompt.</p>`;
@@ -117,15 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // Check if prompt is empty here before beginning any processing
       if (!prompt) {
         resultVideo.innerHTML = `<p style="color: #ef4444;">❌ Please enter a prompt.</p>`;
-        return;
-      }
-
-      // Secret Admin Override
-      if (prompt === "dhairya_admin_unlimited") {
-        localStorage.setItem("promptx_admin", "true");
-        promptInput.value = "";
-        updateQuotaUI();
-        resultVideo.innerHTML = `<p style="color: #22c55e;">✅ Admin Mode Enabled! You now have unlimited prompts.</p>`;
         return;
       }
 
