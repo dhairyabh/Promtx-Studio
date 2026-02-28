@@ -204,4 +204,58 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // ========== FEEDBACK SYSTEM ==========
+  const submitFeedbackBtn = document.getElementById("submitFeedback");
+  if (submitFeedbackBtn) {
+    submitFeedbackBtn.addEventListener("click", async () => {
+      const nameInput = document.getElementById("userName");
+      const emailInput = document.getElementById("userEmail");
+      const messageInput = document.getElementById("userFeedback");
+      const feedbackMessage = document.getElementById("feedbackMessage");
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const message = messageInput.value.trim();
+
+      // Basic validation
+      if (!name || !email || !message) {
+        feedbackMessage.innerHTML = `<p style="color: #ef4444;">❌ Please fill in all fields.</p>`;
+        return;
+      }
+
+      submitFeedbackBtn.disabled = true;
+      submitFeedbackBtn.innerText = "Submitting...";
+      feedbackMessage.innerHTML = ""; // Clear previous messages
+
+      try {
+        const response = await fetch("/api/feedback", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, email, message }),
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          feedbackMessage.innerHTML = `<p style="color: #ef4444;">❌ ${data.error}</p>`;
+        } else {
+          // Success
+          feedbackMessage.innerHTML = `<p style="color: #22c55e;">✅ ${data.message}</p>`;
+          // Clear inputs
+          nameInput.value = "";
+          emailInput.value = "";
+          messageInput.value = "";
+        }
+      } catch (error) {
+        feedbackMessage.innerHTML = `<p style="color: #ef4444;">❌ Error submitting feedback. Please try again later.</p>`;
+        console.error("Feedback error:", error);
+      } finally {
+        submitFeedbackBtn.disabled = false;
+        submitFeedbackBtn.innerText = "Submit Feedback";
+      }
+    });
+  }
 });

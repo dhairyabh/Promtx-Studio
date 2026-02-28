@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import shutil, os, uuid
 
 from services.prompt import handle_prompt
+from database import get_db
 
 app = FastAPI()
 
@@ -77,3 +78,28 @@ async def process_video_endpoint(
         return {
             "error": error_msg
         }
+
+from pydantic import BaseModel
+from datetime import datetime
+
+class Feedback(BaseModel):
+    name: str
+    email: str
+    message: str
+
+@app.post("/api/feedback")
+async def submit_feedback(feedback: Feedback):
+    db = get_db()
+    if db is None:
+        return {"error": "Database connection failed. Please check MONGODB_URI."}
+        
+    feedback_data = feedback.dict()
+    feedback_data["timestamp"] = datetime.utcnow()
+    
+    try:
+        # Insert into the 'feedback' collection
+        db.feedback.insert_one(feedback_data)
+        return {"success": True, "message": "Feedback submitted successfully!"}
+    except Exception as e:
+        print(f"Error saving feedback: {e}")
+        return {"error": "Failed to save feedback."}
