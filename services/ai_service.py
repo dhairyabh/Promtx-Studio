@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Get from environment variable (Render/Local .env) or use fallback
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") or "AIzaSyAa-1VJ6X0H7c9tji9Wknbmq3K1tBngXWo"
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
 def generate_summary(transcript: str):
     if not GEMINI_API_KEY :
