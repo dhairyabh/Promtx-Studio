@@ -28,7 +28,7 @@ def generate_summary(transcript: str):
         """
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-3-flash-preview",
             contents=prompt
         )
         return response.text.strip()
@@ -80,7 +80,7 @@ def generate_srt_gemini(media_path: str, target_language: str = None):
 
             print(f"Generating SRT using Gemini 2.5 Flash (Target: {target_language if target_language else 'Original'}). Attempt {attempt + 1}/{max_retries}...")
             response = client.models.generate_content(
-                model="gemini-2.0-flash",
+                model="gemini-3-flash-preview",
                 contents=[uploaded_file, prompt]
             )
             
@@ -220,7 +220,7 @@ def generate_summary_gemini(media_path: str, user_prompt: str = ""):
 
             print(f"Analyzing video content with Gemini 2.5 Flash. Attempt {attempt + 1}/{max_retries}...")
             response = client.models.generate_content(
-                model="gemini-2.0-flash",
+                model="gemini-3-flash-preview",
                 contents=[uploaded_file, prompt]
             )
             
@@ -418,7 +418,7 @@ def extract_intent_gemini(user_prompt: str):
         """
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-3-flash-preview",
             contents=f"{system_prompt}\n\nUser Instruction: {user_prompt}",
             config={
                 'response_mime_type': 'application/json'
