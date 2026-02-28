@@ -114,6 +114,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // Check if prompt is empty here before beginning any processing
+      if (!prompt) {
+        resultVideo.innerHTML = `<p style="color: #ef4444;">❌ Please enter a prompt.</p>`;
+        return;
+      }
+
+      // Decrement usage count right when the process button is clicked and prompt is valid
+      incrementUsageCount();
+
       // If no file but there's a prompt, assume generation
       if (!file && prompt) {
         resultVideo.innerHTML = `<p style="color: #38bdf8;">🎬 Generating video from prompt... (Wait max 4 to 5 min)</p>`;
@@ -134,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
           if (data.error) {
             resultVideo.innerHTML = `<p style="color: #ef4444;">❌ ${data.error}</p>`;
           } else {
-            incrementUsageCount(); // Increment usage on successful generation
             resultVideo.innerHTML = `
               <p style="color: #22c55e;">✅ Video generated successfully!</p>
               <video controls>
@@ -153,11 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Otherwise, editing mode
-      if (!prompt) {
-        resultVideo.innerHTML = `<p style="color: #ef4444;">❌ Please enter a prompt.</p>`;
-        return;
-      }
-
       resultVideo.innerHTML = `<p style="color: #38bdf8;">⏳ Processing your video... (Wait max 4 to 5 min)</p>`;
       processBtn.disabled = true;
       processBtn.innerText = "Processing...";
