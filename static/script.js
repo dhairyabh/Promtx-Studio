@@ -104,6 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========== VIDEO PROCESSING ==========
   if (processBtn) {
     processBtn.addEventListener("click", async () => {
+      if (!checkQuota()) return; // Block if quota exceeded
+
       const file = fileInput.files[0];
       const prompt = promptInput.value.trim();
 
@@ -132,6 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (data.error) {
             resultVideo.innerHTML = `<p style="color: #ef4444;">❌ ${data.error}</p>`;
           } else {
+            incrementUsageCount(); // Increment usage on successful generation
             resultVideo.innerHTML = `
               <p style="color: #22c55e;">✅ Video generated successfully!</p>
               <video controls>
@@ -258,6 +261,51 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // ========== QUOTA MANAGEMENT ==========
+  const quotaCountSpan = document.getElementById("quotaCount");
+  const MAX_FREE_PROMPTS = 5;
+
+  function getUsageCount() {
+    return parseInt(localStorage.getItem("promptX_usage_count") || "0", 10);
+  }
+
+  function incrementUsageCount() {
+    const current = getUsageCount();
+    localStorage.setItem("promptX_usage_count", current + 1);
+    updateQuotaUI();
+  }
+
+  function updateQuotaUI() {
+    if (!quotaCountSpan) return;
+    const current = getUsageCount();
+    const remaining = Math.max(0, MAX_FREE_PROMPTS - current);
+
+    quotaCountSpan.innerText = remaining;
+
+    if (remaining === 0) {
+      quotaCountSpan.parentElement.innerHTML = `<span style="color: #ef4444;">Free Trial Ended</span> • <a href="#subscription" style="color: var(--accent); text-decoration: underline;">Upgrade</a>`;
+    }
+  }
+
+  function checkQuota() {
+    if (getUsageCount() >= MAX_FREE_PROMPTS) {
+      if (resultVideo) {
+        resultVideo.innerHTML = `
+          <div style="background: var(--soft); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); text-align: center;">
+            <p style="font-size: 16px; font-weight: 800; color: #ef4444; margin-bottom: 8px;">🚀 Free Trial Ended</p>
+            <p style="color: var(--text); font-size: 14px; margin-bottom: 12px;">You've used all 5 of your free trial prompts!</p>
+            <a href="#subscription" style="display: inline-block; padding: 8px 16px; background: var(--accent); color: white; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 14px;">View Subscription Plans</a>
+          </div>
+        `;
+      }
+      return false; // Blocks operation
+    }
+    return true; // Allows operation
+  }
+
+  // Initialize Quota UI on load
+  updateQuotaUI();
 
   // ========== CHATBOT WIDGET ==========
   const chatToggle = document.getElementById('chatToggle');
