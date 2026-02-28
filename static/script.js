@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ========== QUOTA MANAGEMENT ==========
-  const quotaCountSpan = document.getElementById("quotaCount");
+  const quotaMessageDiv = document.getElementById("quotaMessage");
   const MAX_FREE_PROMPTS = 5;
 
   function getUsageCount() {
@@ -300,21 +300,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateQuotaUI() {
-    if (!quotaCountSpan) return;
+    if (!quotaMessageDiv) return;
 
     // Check if admin mode is on
     if (localStorage.getItem("promptx_admin") === "true") {
-      quotaCountSpan.parentElement.innerHTML = `<span style="color: #22c55e; font-weight: 800;">Admin Mode (Unlimited Prompts)</span>`;
+      quotaMessageDiv.innerHTML = `<span style="color: #22c55e; font-weight: 800;">Admin Mode (Unlimited Prompts)</span>`;
       return;
     }
 
     const current = getUsageCount();
     const remaining = Math.max(0, MAX_FREE_PROMPTS - current);
 
-    quotaCountSpan.innerText = remaining;
-
     if (remaining === 0) {
-      quotaCountSpan.parentElement.innerHTML = `<span style="color: #ef4444;">Free Trial Ended</span> • <a href="#subscription" style="color: var(--accent); text-decoration: underline;">Upgrade</a>`;
+      quotaMessageDiv.innerHTML = `<span style="color: #ef4444; font-weight: 800;">Free Trial Ended</span> • <a href="#subscription" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Upgrade</a>`;
+    } else {
+      quotaMessageDiv.innerHTML = `<span id="quotaCount" style="color: var(--text); font-weight: 800;">${remaining}</span> Free Prompts Remaining`;
     }
   }
 
