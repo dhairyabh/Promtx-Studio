@@ -101,20 +101,24 @@ body {
   font-size: 16px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  text-transform: uppercase;
 }
 
 .logo::before {
   content: "";
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 999px;
   background: var(--accent);
-  box-shadow: 0 0 0 5px rgba(124, 58, 237, 0.0);
+  box-shadow: 0 0 12px var(--accent);
+  opacity: 0.9;
 }
 
 :root[data-theme="dark"] .logo::before {
-  box-shadow: 0 0 0 5px rgba(124, 58, 237, 0.15);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.6);
+  opacity: 1;
 }
 
 .nav-links {
